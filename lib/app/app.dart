@@ -21,8 +21,9 @@ class _AppState extends State<App> {
           accentColor: const Color(0xFF13B9FF),
         ),
       ),
-      home: BlocProvider(
-          create: (context) => WeatherBloc(), child: WeatherHome()),
+      home: BlocProvider<WeatherBloc>(
+          create: (context) => WeatherBloc(), 
+          child: const WeatherHome()),
     );
   }
 }

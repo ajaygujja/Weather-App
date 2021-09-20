@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:weather_app/model/weather_model.dart';
@@ -13,23 +14,22 @@ part 'weather_state.dart';
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   WeatherBloc() : super(WeatherInitial());
 
-  // WeatherState get initialState => WeatherInitial();
-
   @override
   Stream<WeatherState> mapEventToState(
     WeatherEvent event,
   ) async* {
-    if (event is GetWeather) {
-      yield WeatherLoading();
+    yield WeatherLoading();
 
+    if (event is GetWeather) {
       try {
         final weather = await _fetchWeatherFromApi(event.cityName!);
-        print("final $weather");
 
         yield WeatherLoaded(weather);
       } catch (e) {
-        print(e);
+        yield WeatherError();
+        print("exception $e");
       }
+
     } else if (event is ResetWeather) {
       yield WeatherInitial();
     }
@@ -37,7 +37,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   Future<Weather> _fetchWeatherFromApi(String cityName) async {
     final result = await http.Client().get(Uri.parse(
-        'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=502957057d382f27f866a4089160e301'));
+        'https://api.openweathermap.org/data/2.5/weather?q=$cityName&units=metric&appid=502957057d382f27f866a4089160e301'));
 
     if (result.statusCode != 200) {
       throw Exception();

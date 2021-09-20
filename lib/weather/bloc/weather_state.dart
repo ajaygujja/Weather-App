@@ -2,12 +2,14 @@ part of 'weather_bloc.dart';
 
 class WeatherState extends Equatable {
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 class WeatherInitial extends WeatherState {}
 
 class WeatherLoading extends WeatherState {}
+
+class WeatherError extends WeatherState{}
 
 class WeatherLoaded extends WeatherState {
   WeatherLoaded(this.weather);
@@ -17,3 +19,4 @@ class WeatherLoaded extends WeatherState {
   @override
   List<Object?> get props => [weather];
 }
+

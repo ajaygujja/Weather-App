@@ -22,7 +22,7 @@ class _WeatherHomeState extends State<WeatherHome> {
           child:
               BlocBuilder<WeatherBloc, WeatherState>(builder: (context, state) {
             if (state is WeatherInitial) {
-                return Padding(
+              return Padding(
                 padding: const EdgeInsets.all(8),
                 child: Center(
                   child: Column(
@@ -65,14 +65,17 @@ class _WeatherHomeState extends State<WeatherHome> {
                   ),
                 ),
               );
-              } else if (state is WeatherLoading) {
+            } else if (state is WeatherLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             } else if (state is WeatherLoaded) {
               return ShowData(state.weather, controller.text);
+            } else if (state is WeatherError) {
+              return const ErrorMessage();
+            } else {
+              return const CircularProgressIndicator();
             }
-            return const CircularProgressIndicator();
           }),
         ),
       ),
@@ -104,18 +107,50 @@ class ShowData extends StatelessWidget {
             SizedBox(
               height: 50,
               width: double.infinity,
-              child: RaisedButton(
+              child: ElevatedButton(
                 onPressed: () {
-                  // return to again notsearchingstate//
+                  // return to again not searchingstate
                   BlocProvider.of<WeatherBloc>(context).add(ResetWeather());
                 },
-                color: Colors.blue,
-                child: const Text('search again'),
+                child: const Text('Search Again'),
               ),
             )
           ],
         ),
       ),
+    );
+  }
+}
+
+class ErrorMessage extends StatelessWidget {
+  const ErrorMessage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    print('weatherError');
+    final theme = Theme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text('🙈', style: TextStyle(fontSize: 64)),
+        Text(
+          'Something went wrong!\n',
+          style: theme.textTheme.headline5,
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {
+              BlocProvider.of<WeatherBloc>(context).add(ResetWeather());
+            },
+            child: const Text('Search Again'),
+          ),
+        )
+      ],
     );
   }
 }
